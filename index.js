@@ -40,7 +40,7 @@ app.use(async (err, req, res, next) => {
 
 
 app.get("/check", async (req, res) => {
-    res.send({ status: "8421", Backend_Error: "auth microservice is working" });
+    res.send({ status: "8421", Backend_Error: "loan recovery is working" });
 });
 
 app.use("*", async (req, res) => {
