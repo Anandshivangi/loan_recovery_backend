@@ -1,8 +1,11 @@
 const express=require("express");
-const { adminregister } = require("../Controllers/admin_auth_controller");
+const { login, register, addAdmin } = require("../Controllers/master_auth_controller");
+// const { adminregister } = require("../Controllers/master_auth_controller");
 
-const admin_auth_route=express.Router();
+const masterAuthRoute=express.Router();
 
-admin_auth_route.route("/registration").post(adminregister)
+masterAuthRoute.route('/master_login').post(login);
+masterAuthRoute.route('/master_register').post(register);
+masterAuthRoute.route("/add/admin").post(addAdmin)
 
-module.exports={admin_auth_route}
+module.exports={masterAuthRoute}

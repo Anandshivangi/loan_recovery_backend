@@ -4,8 +4,9 @@ const db = require('./DB/db');
 const login_route = require("./master/routes/masterUser")
 const cors = require("cors")
 const rateLimit = require('express-rate-limit');
-const { operator_auth_route } = require('./operator/routes/operator_auth_route');
 const { admin_auth_route } = require('./admin/routes/admin_auth_route');
+const masterAuthRoute = require('./master/routes/masterUser');
+const { operator_auth_route } = require('./operator/routes/operator_auth_route');
 require('dotenv').config();
 // require("./db")
 
@@ -26,14 +27,14 @@ app.use(limiter);
 app.use(express.json({ limit: '5mb' }));
 
 // routes for master_Admin 
-app.use("/master", login_route);
+app.use("/master",masterAuthRoute);
 
 
 
 
 // routes for Admin 
 
-app.use("/admin", admin_auth_route)
+app.use("/admin", masterAuthRoute)
 
 
 
@@ -79,6 +80,3 @@ app.use("*", async (req, res) => {
 app.listen(process.env.port, () => {
   console.log(`server is running on port  ${process.env.port}`);
 })
-
-
-

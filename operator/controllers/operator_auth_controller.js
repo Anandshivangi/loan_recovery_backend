@@ -11,7 +11,9 @@ var operatorLogin = async (req, res) => {
 
 
     const userSchemaValidation = Joi.object({
-        phoneNo: Joi.string().required(),
+        phoneNo: Joi.string()
+            .pattern(/^[6-9]\d{9}$/)
+            .required(),
         password: Joi.string().required(),
     });
 
@@ -37,12 +39,25 @@ var operatorLogin = async (req, res) => {
                 message: 'Incorrect password'
             });
         }
+        else {
+
+            const token = jwt.sign({ _id: user._id, }, process.env.SECRET_KEY, { expiresIn: '10d' });
+
+            await operatorModel.updateOne(
+                { phoneNo },
+                { $set: { token } }
+            )
+            return res.send({ status: 1, token, message: "login sucessfull" })
+
+        }
 
     }
 
 
 
 }
+
+
 // var addOperator = async (req, res) => {
 //     const schema = joi.object({
 //         name: joi.string().required(),

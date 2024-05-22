@@ -1,11 +1,13 @@
 const express=require("express");
-const userRoute = express.Router();
-const {login,register}=require("../controllers/master_auth_controllers")
+const masterAuthRoute = express.Router();
+const {login,register, addAdmin}=require("../controllers/master_auth_controller");
+// const { adminregister } = require("../../admin/Controllers/admin_auth_controller");
 // const register=require("../controllers/masterRegister");
 
 
-userRoute.route('/master_login').post(login);
-userRoute.route('/master_register').post(register);
+masterAuthRoute.route('/master_login').post(login);
+masterAuthRoute.route('/master_register').post(register);
+masterAuthRoute.route("/add/admin").post(addAdmin)
 
 
-module.exports = userRoute;
+module.exports = masterAuthRoute;
