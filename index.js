@@ -1,13 +1,11 @@
 const express = require('express');
 const app = express();
 const db = require('./DB/db');
-const login_route = require("./master/routes/masterUser")
 const cors = require("cors")
 const rateLimit = require('express-rate-limit');
-const { admin_auth_route } = require('./admin/routes/admin_auth_route');
-const masterAuthRoute = require('./master/routes/masterUser');
-require('dotenv').config();
-// require("./db")
+const { masterAuthRoute } = require('./admin/routes/master_auth_route');
+require('dotenv').config()
+
 
 
 
@@ -25,8 +23,6 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(express.json({ limit: '5mb' }));
 
-// routes for master_Admin 
-app.use("/master",masterAuthRoute);
 
 
 

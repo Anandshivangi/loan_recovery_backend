@@ -5,7 +5,6 @@ const { masterUsers } = require("../../models/masteUsersModel");
 const { CreateError } = require('../../utils/createErr');
 // const { CreateError } = require("../../utils/createErr")
 
-
 // Route for user registration
 const register = async (req, res) => {
   const { phoneNo, password } = req.body;
@@ -150,4 +149,43 @@ var addAdmin = async (req, res, next) => {
 }
 
 
-module.exports = { register, login,addAdmin }
+
+// Get and Search Data with Pagination
+const getAdmin=async (req, res) => {
+
+    try {
+          //  const Users_data = await masterUsers.find({}, 'adminName empID bankName area');
+          //   res.json(Users_data);
+          //   res.status(500).json({ message: err.message });
+            
+        const { page = 1, limit = 10, search = '' } = req.query;
+
+        const query = {
+            $or: [
+                { adminName: { $regex: search, $options: 'i' } },
+                { empID: { $regex: search, $options: 'i' } },
+                { bank_name: { $regex: search, $options: 'i' } },
+                { area: { $regex: search, $options: 'i' } }
+            ]
+        };
+
+        const Users = await User.find(query)
+            .limit(parseInt(limit))
+            .skip((parseInt(page) - 1) * parseInt(limit))
+            .exec();
+
+        const count = await User.countDocuments(query);
+
+        res.json({
+            Users,
+            totalPages: Math.ceil(count / limit),
+            currentPage: parseInt(page)
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+
+
+module.exports = { register, login,addAdmin,getAdmin }
