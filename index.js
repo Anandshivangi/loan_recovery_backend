@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('./DB/db');
-const login_route = require("./master/routes/userLogin")
+const login_route = require("./master/routes/masterUser")
 const cors=require("cors")
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();

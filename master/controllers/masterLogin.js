@@ -24,7 +24,7 @@ const userSchemaValidation = Joi.object({
   if (!validPassword) return res.status(400).send('Invalid credentials');
   res.status(200).send('Pre-defined user login successful');
 
-  
+  // res.send({status:1})
   // token
 
   const SECRET_KEY = 'your_jwt_secret_key';
