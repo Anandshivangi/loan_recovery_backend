@@ -40,7 +40,7 @@ app.use("/admin", admin_auth_route)
 
 // routes for operator 
 
-app.use("/operator", operator_auth_route);
+// app.use("/operator", operator_auth_route);
 
 
 
