@@ -1,54 +1,70 @@
+const masterUsers= require("../../models/masteUsersModel");
 const { CreateError } = require("../../utils/createErr");
-
+const { trycatch } = require("../../utils/tryCatch");
+const Joi = require("joi")
+const bcrypt = require("bcryptjs");
+const moment = require("moment")
 var adminregister = async (req, res, next) => {
 
 
     const schema = Joi.object({
-      email: Joi.string().max(50).required(),
-      password: Joi.string().max(50).required(),
-    //   username: Joi.string().max(50).required(),
-  
+        phoneNo: Joi.string().max(50).required(),
+        joinDate: Joi.string()
+            .regex(/^\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}$/)
+            .message("Invalid date-time format. Please use DD-MM-YYYY HH:mm:ss")
+            .required(),
+        //   password: Joi.string().max(50).required(),
+        //   username: Joi.string().max(50).required(),
+
     });
-  
-    // console.log("hello")
+    const { error } = await schema.validateAsync(req.body);
+
+    let {
+        phoneNo,
+        joinDate
+    } = req.body;
+
+    joinDate = moment(joinDate).valueOf();
     const timestamp = Date.now();
 
-    // Generate a random number between 0 and 1, then convert it to a string and remove "0."
     const randomNum = Math.random().toString().substring(111, 999);
-
-    // Combine timestamp and random number to form a unique ID
     const adminId = `ADMIN-${timestamp}-${randomNum}`;
-    
 
-    const { error } = await schema.validateAsync(req.body);
-  
-  
-    const {email, password } = req.body;
-  
+
+
+
+
     // Check if admin with the same username or email already exists
-    const existingAdmin = await userModel.findOne({ $or: [{ username }, { email }] });
-    if (existingAdmin) {
-      // return res.status(400).json({ message: 'Admin with the same username or email already exists' });
-      throw new CreateError("Validation Error", "Admin with the same username or email already exists")
-    }
-  
-    const hashedPassword = await bcrypt.hash(password, 10);
-  
+    // const existingAdmin = await masterUsers.findOne({ phoneNo});
+    // if (existingAdmin) {
+    //   // return res.status(400).json({ message: 'Admin with the same username or email already exists' });
+    //   throw new CreateError("Validation Error", "Admin with the same username or email already exists")
+    // }
+
+    const hashedPassword = await bcrypt.hash(adminId, 10);
+// return console.log(0);
     // Create a new admin
-    const newAdmin = new userModel({
-      name: username,
-      email,
-      password: hashedPassword,
-      is_admin: 1
+    const newAdmin = new masterUsers({
+        //   name: username,
+        adminId,
+        password:
+        phoneNo,
+        password: hashedPassword,
+
+        joinDate,
+        isMaster: 0
     });
-  
+
     // Save the new admin to the database
     await newAdmin.save();
-  
+
     res.json({
-      status: 1,
-      message: 'Admin registered successfully',
-     
+        status: 1,
+        message: 'Admin registered successfully',
+
     });
-  }
-  
+}
+
+adminregister = trycatch(adminregister)
+
+module.exports = { adminregister }
