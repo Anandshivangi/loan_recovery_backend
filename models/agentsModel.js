@@ -7,7 +7,7 @@ const adminSchema = new mongoose.Schema({
   },
   phoneNo: {
     type: String,
-  },  
+  },
   password: {
     type: String,
   },
@@ -15,10 +15,10 @@ const adminSchema = new mongoose.Schema({
     type: String
   },
   joinDate: {
-    type: integer
+    type: Number
   },
-  isMAster:{
-    type:integer
+  isMAster: {
+    type: Number
   }
 });
 
