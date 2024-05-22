@@ -1,9 +1,10 @@
 const mongoose =require('mongoose');
+require('dotenv').config();
 mongoose.set('strictQuery', false);
-let DB="mongodb://loan:8421@98.70.11.123:27017/RecoveryLoan?authSource=RecoveryLoan";
+// let DB=process.env.db_url
 const conn=async()=>{
 try{
-    await mongoose.connect(DB);
+    await mongoose.connect(process.env.db_url);
     console.log("mongodb connected...");
 }catch(err){
     console.log(err);
