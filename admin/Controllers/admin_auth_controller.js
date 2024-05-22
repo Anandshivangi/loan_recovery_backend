@@ -1,3 +1,5 @@
+const { CreateError } = require("../../utils/createErr");
+
 var adminregister = async (req, res, next) => {
 
 
@@ -12,7 +14,7 @@ var adminregister = async (req, res, next) => {
     const timestamp = Date.now();
 
     // Generate a random number between 0 and 1, then convert it to a string and remove "0."
-    const randomNum = Math.random().toString().substring(2, 10);
+    const randomNum = Math.random().toString().substring(111, 999);
 
     // Combine timestamp and random number to form a unique ID
     const adminId = `ADMIN-${timestamp}-${randomNum}`;
