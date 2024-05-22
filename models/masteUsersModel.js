@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Define admin schema
 const adminSchema = new mongoose.Schema({
-  userId: {
+  adminId: {
     type: String,
   },
   phoneNo: {
@@ -15,14 +15,14 @@ const adminSchema = new mongoose.Schema({
     type: String
   },
   joinDate: {
-    type: integer
+    type: Number
   },
-  isMAster:{
-    type:integer
+  isMaster:{
+    type:Number
   }
 });
 
 // Create and export Admin model
-const masterUsers = mongoose.model('masterUsers', adminSchema);
+const masterUsers = mongoose.model('masterUser', adminSchema);
 
 module.exports = masterUsers;

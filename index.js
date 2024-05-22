@@ -4,6 +4,7 @@ const db = require('./DB/db');
 const login_route = require("./master/routes/masterUser")
 const cors=require("cors")
 const rateLimit = require('express-rate-limit');
+const { admin_auth_route } = require('./admin/routes/admin_auth_route');
 require('dotenv').config();
 // require("./db")
 
@@ -24,6 +25,8 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(express.json({ limit: '5mb' }));
 
+
+app.use("/admin",admin_auth_route)
 
 app.listen(process.env.port, () => {
     console.log(`server is running on port  ${process.env.port}`);
