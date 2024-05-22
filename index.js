@@ -5,6 +5,7 @@ const login_route = require("./master/routes/masterUser")
 const cors = require("cors")
 const rateLimit = require('express-rate-limit');
 const { operator_auth_route } = require('./operator/routes/operator_auth_route');
+const { admin_auth_route } = require('./admin/routes/admin_auth_route');
 require('dotenv').config();
 // require("./db")
 
@@ -32,6 +33,7 @@ app.use("/master", login_route);
 
 // routes for Admin 
 
+app.use("/admin", admin_auth_route)
 
 
 
@@ -77,3 +79,6 @@ app.use("*", async (req, res) => {
 app.listen(process.env.port, () => {
   console.log(`server is running on port  ${process.env.port}`);
 })
+
+
+

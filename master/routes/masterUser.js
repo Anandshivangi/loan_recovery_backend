@@ -1,11 +1,11 @@
 const express=require("express");
 const userRoute = express.Router();
-const login=require("../controllers/masterLogin");
-const register=require("../controllers/masterRegister");
+const {login,register}=require("../controllers/master_auth_controllers")
+// const register=require("../controllers/masterRegister");
 
 
-userRoute.route('/user_login').post(login);
-userRoute.route('/user_register').post(register);
+userRoute.route('/master_login').post(login);
+userRoute.route('/master_register').post(register);
 
 
 module.exports = userRoute;
