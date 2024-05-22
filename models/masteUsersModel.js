@@ -25,4 +25,4 @@ const adminSchema = new mongoose.Schema({
 // Create and export Admin model
 const masterUsers = mongoose.model('masterUser', adminSchema);
 
-module.exports = masterUsers;
+module.exports = {masterUsers};
