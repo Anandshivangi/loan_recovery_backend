@@ -27,6 +27,7 @@ const userSchemaValidation = Joi.object({
    const user = new masterUsers({
      phoneNo,
      password: hashedPassword,
+     isMAster:1
    });
  
    await user.save();
