@@ -1,7 +1,7 @@
 const express=require('express');
 const app = express();
 const db=require('./DB/db');
-const user_route=require("./master/routes/user")
+const master_route=require("./master/routes/masterUser")
 // const authenticateToken=require("./Middleware/token")
 
 
@@ -12,7 +12,7 @@ PORT=4000;
 app.use(express.json());
 
 // routes
-app.use("/api",user_route);
+app.use("/api",master_route);
 
 app.get("/",(req,res)=>{
     res.send("hello world")

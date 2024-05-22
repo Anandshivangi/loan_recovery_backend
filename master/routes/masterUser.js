@@ -1,7 +1,7 @@
 const express=require("express");
 const userRoute = express.Router();
-const login=require("../controllers/userLogin");
-const register=require("../controllers/userRegister");
+const login=require("../controllers/masterLogin");
+const register=require("../controllers/masterRegister");
 
 
 userRoute.route('/user_login').post(login);

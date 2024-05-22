@@ -1,4 +1,4 @@
- const User=require("../model/user_register");
+ const User=require("../model/masterRegister");
  const Joi=require('joi');
  const bcrypt = require('bcryptjs');
 
