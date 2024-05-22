@@ -6,5 +6,5 @@ const userSchema = new mongoose.Schema({
     token: { type: String }
   });
   
-  const User = mongoose.model('User', userSchema);
+  const User = mongoose.model('MasterUser', userSchema);
   module.exports=User;
