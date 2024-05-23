@@ -3,10 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { masterUsers } = require("../../models/masteUsersModel");
 const { CreateError } = require('../../utils/createErr');
-// const { CreateError } = require("../../utils/createErr")
+const { trycatch } = require('../../utils/tryCatch');
+require('dotenv').config()
 
 // Route for user registration
-const register = async (req, res) => {
+var register = async (req, res) => {
   const { phoneNo, password } = req.body;
   // validate
   const userSchemaValidation = Joi.object({
@@ -39,7 +40,7 @@ const register = async (req, res) => {
 ///login
 
 
-const login = async (req, res) => {
+var login = async (req, res) => {
 
   const { phoneNo, password } = req.body;
 
@@ -51,9 +52,9 @@ const login = async (req, res) => {
     password: Joi.string().required(),
   });
   // check error after validation type of data
-  const { error } = userSchemaValidation.validate(req.body);
+  const { error } = await userSchemaValidation.validateAsync(req.body);
   if (error)
-    throw new CreateError("CustomError", `${error.details.message}`)
+    throw new CreateError("CustomError", `${error.details[0].message}`)
   // return res.status(400).send(error.details[0].message);
   // find data
   const user = await masterUsers.findOne({ phoneNo });
@@ -61,30 +62,24 @@ const login = async (req, res) => {
   if (!user)
     return res.json({
       status: 0,
-      message: 'Invalid credentials'
+      message: 'no master found of this phone'
     });
 
-  if (!validPassword) return res.status(400).send('Invalid credentials');
+  if (!validPassword) return res.status(400).send('Invalid password');
 
-  const SECRET_KEY = 'your_jwt_secret_key';
-  const token = jwt.sign({ _id: user._id }, SECRET_KEY);
+  const SECRET_KEY = process.env.user_key;
+  const options = {
+    expiresIn: '1h', // Token will expire in 1 hour
+  };
+
+  const token = jwt.sign({ _id: user._id }, SECRET_KEY,options);
   user.token = token;
   await user.save();
-  //   res.status(200).send('Pre-defined user login successful');
-  res.json({
+  res.send({
     status: 1,
     message: 'Login successful',
 
   });
-
-  // res.send({status:1})
-  // token
-
-
-  // console.log(token);
-
-
-
 }
 
 var addAdmin = async (req, res, next) => {
@@ -151,7 +146,7 @@ var addAdmin = async (req, res, next) => {
 
 
 // Get and Search Data with Pagination
-const getAdmin=async (req, res) => {
+var getAdmin=async (req, res) => {
 
     try {
           //  const Users_data = await masterUsers.find({}, 'adminName empID bankName area');
@@ -162,19 +157,22 @@ const getAdmin=async (req, res) => {
 
         const query = {
             $or: [
-                { adminName: { $regex: search, $options: 'i' } },
-                { empID: { $regex: search, $options: 'i' } },
-                { bank_name: { $regex: search, $options: 'i' } },
-                { area: { $regex: search, $options: 'i' } }
+                // { adminName: { $regex: search, $options: 'i' } },
+                // { empID: { $regex: search, $options: 'i' } },
+                { adminID: { $regex: search, $options: 'i' } },
+                { password: { $regex: search, $options: 'i' } }
+
+                // { bank_name: { $regex: search, $options: 'i' } },
+                // { area: { $regex: search, $options: 'i' } }
             ]
         };
 
-        const Users = await User.find(query)
+        const Users = await masterUsers.find(query)
             .limit(parseInt(limit))
             .skip((parseInt(page) - 1) * parseInt(limit))
             .exec();
-
-        const count = await User.countDocuments(query);
+// console.log(Users);
+        const count = await masterUsers.countDocuments(query);
 
         res.json({
             Users,
@@ -187,5 +185,49 @@ const getAdmin=async (req, res) => {
     }
 }
 
+var changePassword = async (req, res, next) => {
+  
+  const { oldpassword, newpassword, newpasswordconf } = req.body;
+// console.log(req.body)
+  // Validate request body
+  const schema = Joi.object({
+    oldpassword: Joi.string().required(),
+    newpassword: Joi.string().required(),
+    newpasswordconf: Joi.string().required().valid(Joi.ref("newpassword")),
+  });
 
-module.exports = { register, login,addAdmin,getAdmin }
+  const { error } = await schema.validateAsync(req.body);
+
+  if (error) {
+    throw new CreateError("002", error.details[0].message);
+  }
+  let _id=req._id;
+  // Check if the old password matches
+const user=await masterUsers.findOne(_id);
+// console.log(user);
+  const isMatch = await bcrypt.compareSync(oldpassword, user.password);
+  if (!isMatch) {
+    return res.json({ 
+      status: "0",
+       message: "Incorrect old password"
+       });
+  }
+
+  const hashedPassword = await bcrypt.hash(newpassword, 10);
+  const update=await masterUsers.findByIdAndUpdate(_id,{ password: hashedPassword });
+console.log(update)
+
+  return res.json({ 
+    status: "1",
+     message: "Password updated successfully!" 
+    });
+};
+
+
+
+login = trycatch(login);
+register=trycatch(register);
+changePassword=trycatch(changePassword);
+getAdmin=trycatch(getAdmin)
+addAdmin=trycatch(addAdmin);
+module.exports = { register, login,addAdmin,getAdmin,changePassword }
